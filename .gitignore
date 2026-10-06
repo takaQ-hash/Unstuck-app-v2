@@ -1,0 +1,25 @@
+# ---- 秘密情報 ----
+.env*
+!.env.example
+*.pem
+**/config/master.key
+**/config/credentials/*.key
+node_modules/
+
+# ---- Terraform ----
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+
+# ---- DBバックアップ用 ----
+*.dump
+
+# ---- AIツールの個人設定 ----
+.claude/settings.local.json
+CLAUDE.local.md
+
+# ---- OSの一時ファイル ----
+.DS_Store
+Thumbs.db
