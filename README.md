@@ -148,27 +148,36 @@ SESエンジニアとして初めて既存システムの改修を担当した�
 ```mermaid
 flowchart LR
     User["ユーザー<br/>ブラウザ / PWA"]
+    Push["Push Service<br/>(FCMなど)"]
 
-    subgraph EC2["AWS EC2（Docker Compose）"]
-        Nginx["Nginx<br/>HTTPS（Let's Encrypt）"]
-        FE["React SPA<br/>静的ファイル"]
+    subgraph CICD["CI/CD"]
+        GHA["GitHub Actions"]
+        GHCR["GHCR"]
+    end
+
+    subgraph EC2["AWS EC2 (Docker Compose)"]
+        Deploy["デプロイ処理<br/>(pull & up -d)"]
+        Nginx["Nginx<br/>HTTPS (Let's Encrypt)"]
+        SPA["React SPA<br/>静的ファイル"]
         API["Rails API"]
         Worker["Sidekiq"]
         DB[("PostgreSQL")]
         Redis[("Redis")]
-        Nginx --> FE
-        Nginx --> API
-        API --> DB
-        API --> Redis
-        Worker --> Redis
-        Worker --> DB
     end
 
-    User -->|"app. / api."| Nginx
-    Worker -->|"Web Push"| User
+    User -->|HTTPS| Nginx
+    Nginx -->|app| SPA
+    Nginx -->|api| API
+    API --> DB
+    API --> Redis
+    Worker --> DB
+    Worker --> Redis
+    Worker -->|Web Push| Push
+    Push --> User
 
-    GA["GitHub Actions"] -->|"イメージをpush"| GHCR["GHCR"]
-    GHCR -->|"pull & up -d"| EC2
+    GHA -->|image push| GHCR
+    GHA -->|デプロイ指示| Deploy
+    Deploy -.->|image pull| GHCR
 ```
 
 本番とステージングは、同じEC2上で別のComposeスタックとして動かし、サブドメインで振り分けます。
