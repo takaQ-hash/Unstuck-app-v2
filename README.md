@@ -9,7 +9,7 @@
 | 公開URL | 準備中 |
 | MVP版（RUNTEQ卒業制作） | [takaQ-hash/Unstuck-app](https://github.com/takaQ-hash/Unstuck-app)（Rails / Hotwire） |
 | 画面遷移図 | [Figma](https://www.figma.com/design/I4hw6jXHypjp71TvWb5uX7/%25E7%2594%25BB%25E9%259D%25A2%25E9%2581%25B7%25E7%25A7%25BB%25E5%259B%25B3_Unstuck?node-id=121-141&p=f&t=WrOJM5Qz4lrCQuPh-0) |
-| ER図 | 本リリース版に更新中 |
+| ER図 | [ER図（本リリース版）](docs/er-diagram.md) |
 | 開発状況 | 設計フェーズ（MVPを React + Rails API mode で作り直しています） |
 
 ---
