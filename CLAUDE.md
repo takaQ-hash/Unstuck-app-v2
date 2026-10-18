@@ -2,6 +2,7 @@
 
 ## プロジェクト概要
 Unstuck-app v2。React（frontend/）＋ Rails API（backend/）のモノレポ。
+※バージョン: Ruby 4.0 / Rails 8.1（API mode）  
 詳細は README.md と docs/er-diagram.md を参照する。
 
 ## 基本方針
