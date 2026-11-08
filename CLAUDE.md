@@ -84,5 +84,9 @@ docker stop unstuck-rails
 - マージはユーザー自身が行う。Claudeはマージしない
 - マージ方法: feature→developはSquash、develop→mainはmerge commit
 
-## （M0-17で追記予定）
-テスト・Lint・CIのコマンド、ディレクトリ構成、アーキテクチャ方針
+## アーキテクチャ方針
+- バックエンドは Rails の API mode（画面を持たず、JSONだけを返す構成）で作る
+- 認証は Devise のセッション認証（HttpOnly Cookie）を使う。JWTは使わない（理由は README の 5-3）
+- Fat Controller・Fat Model（1つのクラスに処理を詰め込みすぎた状態）を避ける
+  - 複数のモデルにまたがる処理や、外部サービスとのやり取りは、`app/services/` のServiceクラスに切り出す
+  - Controllerは、リクエストの受け取りとレスポンスの返却に専念させる
