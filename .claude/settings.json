@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(gh issue view *)",
+      "Bash(gh issue list *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch --show-current)",
+      "Bash(git commit *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)"
+    ],
+    "deny": [
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git push --force-with-lease *)",
+      "Bash(git push * --force*)",
+      "Bash(git push * -f *)",
+      "Bash(git push * -f)",
+      "Bash(git push * +*)",
+      "Bash(git push * main)",
+      "Bash(git push * develop)",
+      "Bash(git push * main:*)",
+      "Bash(git push * develop:*)",
+      "Bash(git push * HEAD:main)",
+      "Bash(git push * HEAD:develop)",
+      "Bash(gh pr merge *)",
+      "Bash(gh auth token *)",
+      "Bash(bin/rails credentials:show *)",
+      "Read(.env)",
+      "Read(.env.*)",
+      "Read(**/config/master.key)",
+      "Read(**/config/credentials/*.key)",
+      "Read(*.pem)",
+      "Read(~/.config/gh/**)",
+      "Read(~/.ssh/**)",
+      "Read(~/.aws/**)"
+    ]
+  }
+}
