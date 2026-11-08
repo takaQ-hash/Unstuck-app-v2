@@ -43,6 +43,14 @@ docker stop unstuck-rails
 - ESLint・Prettier: #9
 - Vitest: #10
 
+## 開発環境の注意
+
+### Dockerコマンド
+- `-it` を付けない（Claude Codeには対話できる端末が無く、コマンドが止まってしまうため）
+- 複数のコマンドは `bash -c '...'` にまとめて実行する
+- コンテナ内で作られたファイルは root の所有になる。コンテナ内で `chown -R $HOST_UID:$HOST_GID <対象>` を実行し、所有者を戻す
+  （`docker run` に `-e HOST_UID=$(id -u) -e HOST_GID=$(id -g)` を渡しておく）
+
 ## 基本方針
 - 1 Issue = 1 PR とする
 - 実装前に `gh issue view <番号>` でIssueを読み、タスクと受け入れ条件を仕様として実装する
