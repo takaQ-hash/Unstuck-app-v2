@@ -70,8 +70,10 @@ docker stop unstuck-rails
 例: `chore/add-claude-md`
 
 ## コミット
-Conventional Commits。prefixは英語、本文は日本語。
-例: `chore: Issueテンプレートを追加`
+- Conventional Commits（`feat:`・`fix:`・`docs:`・`chore:` などの接頭辞を付ける書き方）に従う
+- 接頭辞は英語、件名と本文は日本語で書く
+- 1コミット＝1つの論理的な変更とする（Issueのチェック項目1つ＝1コミットが目安）
+- 例: `chore: Issueテンプレートを追加`
 
 ## PR
 - タイトル: `Issue名（#番号）`（Issue名は、Issueのタイトルと完全に一致させる）
