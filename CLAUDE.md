@@ -5,6 +5,44 @@ Unstuck-app v2。React（frontend/）＋ Rails API（backend/）のモノレポ�
 ※バージョン: Ruby 4.0 / Rails 8.1（API mode）  
 詳細は README.md と docs/er-diagram.md を参照する。
 
+### ディレクトリ構成
+```
+backend/    Rails API（#4で作成済み）
+frontend/   React（まだ無い。#8で作成予定）
+docs/       設計資料（ER図・画面遷移図など）
+.github/    Issue・PRテンプレート
+.claude/    Claude Codeのチーム共有設定（settings.json）
+```
+
+## コマンド
+確定したものだけを書く。未確定のものは、各Issueで追記する。
+
+### バックエンド（Rails）
+ホストにRubyは入れていないため、Dockerの `ruby:4.0.7` イメージで実行する。
+compose.yml は #12・#13 で整備する。それまでは次の形で一時的に起動する。
+```bash
+# Railsサーバーをバックグラウンドで起動する
+docker run -d --rm --name unstuck-rails -v "$PWD":/app -w /app/backend \
+  -v unstuck_bundle:/usr/local/bundle -p 3000:3000 \
+  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) ruby:4.0.7 \
+  bash -c 'bundle install && bundle exec rails s -b 0.0.0.0'
+
+# ヘルスチェック（200が返ればOK）
+curl -i http://localhost:3000/up
+
+# 停止する前に、コンテナ内で作られたファイルの所有者を戻す
+docker exec unstuck-rails bash -c 'chown -R $HOST_UID:$HOST_GID /app/backend'
+docker stop unstuck-rails
+```
+
+### 未確定（各Issueで追記する）
+- RuboCop: #5
+- Brakeman: #6
+- RSpec: #7
+- フロントエンドの起動・ビルド・型チェック: #8
+- ESLint・Prettier: #9
+- Vitest: #10
+
 ## 基本方針
 - 1 Issue = 1 PR とする
 - 実装前に `gh issue view <番号>` でIssueを読み、タスクと受け入れ条件を仕様として実装する
