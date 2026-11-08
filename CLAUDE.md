@@ -77,8 +77,11 @@ docker stop unstuck-rails
 
 ## PR
 - タイトル: `Issue名（#番号）`（Issue名は、Issueのタイトルと完全に一致させる）
-- 本文: 概要・実装内容・完了条件・関連issue（`close #番号`）。
-  「対応した問題」「デプロイ影響」は該当する場合のみ追加する
+- 本文: `.github/pull_request_template.md` の4セクション（概要・実装内容・完了条件・関連issue）で書く
+  - 関連issueには `close #番号` を書く
+  - 「対応した問題」「デプロイ影響」は、該当する場合のみ追加する
+- featureブランチのPRは、develop に向けて作成する
+- マージはユーザー自身が行う。Claudeはマージしない
 - マージ方法: feature→developはSquash、develop→mainはmerge commit
 
 ## （M0-17で追記予定）
