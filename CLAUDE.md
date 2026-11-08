@@ -113,6 +113,13 @@ settings.json で止められない書き方（例: `git -C . push`）もある�
 - マージはユーザー自身が行う。Claudeはマージしない
 - マージ方法: feature→developはSquash、develop→mainはmerge commit
 
+### develop→main のRelease PR
+- Release PR（developの変更をmainに反映するPR）も、Claudeが作成してよい（`gh pr create` の確認画面は出る）
+- マージは必ずユーザーが行う。Claudeはマージしない
+- タイトル: `Release: develop の変更を main に反映（YYYY-MM-DD）`
+- 本文: 概要／含まれるPR（developにマージされたPRの番号とタイトルの一覧）／デプロイ影響（該当する場合のみ）／動作確認
+- マージ方法: Create a merge commit
+
 ## アーキテクチャ方針
 - バックエンドは Rails の API mode（画面を持たず、JSONだけを返す構成）で作る
 - 認証は Devise のセッション認証（HttpOnly Cookie）を使う。JWTは使わない（理由は README の 5-3）
