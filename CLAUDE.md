@@ -51,6 +51,10 @@ docker stop unstuck-rails
 - コンテナ内で作られたファイルは root の所有になる。コンテナ内で `chown -R $HOST_UID:$HOST_GID <対象>` を実行し、所有者を戻す
   （`docker run` に `-e HOST_UID=$(id -u) -e HOST_GID=$(id -g)` を渡しておく）
 
+### `/up` とPostgreSQL
+- 開発環境の `/up`（Railsのヘルスチェック用のURL）は、PostgreSQLが起動していないと500を返す
+- `/up` を確認するときは、先にPostgreSQLを起動する（開発用の compose.yml は #12 で用意する）
+
 ## 基本方針
 - 1 Issue = 1 PR とする
 - 実装前に `gh issue view <番号>` でIssueを読み、タスクと受け入れ条件を仕様として実装する
