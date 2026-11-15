@@ -33,10 +33,13 @@ curl -i http://localhost:3000/up
 # 停止する前に、コンテナ内で作られたファイルの所有者を戻す
 docker exec unstuck-rails bash -c 'chown -R $HOST_UID:$HOST_GID /app/backend'
 docker stop unstuck-rails
+
+# RuboCop（指摘0件で終わればOK。自動修正は rubocop -a）
+docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle \
+  ruby:4.0.7 bash -c 'bundle install && bundle exec rubocop'
 ```
 
 ### 未確定（各Issueで追記する）
-- RuboCop: #5
 - Brakeman: #6
 - RSpec: #7
 - フロントエンドの起動・ビルド・型チェック: #8
@@ -138,7 +141,7 @@ push の前に、変更した側（backend／frontend）について次を実行
 | 対象 | チェック | コマンド |
 |---|---|---|
 | backend | RSpec（テスト） | #7 で追記 |
-| backend | RuboCop（コードの書き方の検査） | #5 で追記 |
+| backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（上記のdockerコマンドで実行） |
 | backend | Brakeman（セキュリティの検査） | #6 で追記 |
 | frontend | ESLint（コードの書き方の検査） | #9 で追記 |
 | frontend | Vitest（テスト） | #10 で追記 |

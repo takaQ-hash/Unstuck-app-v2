@@ -1,8 +1,11 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
+# 設定の方針（#5）
+# - rubocop-rails-omakase（Rails公式の「おまかせ」設定）を、そのまま使う
+#   理由: Rails標準の書き方に合わせ、独自の設定を保つ手間を減らすため
+# - 無効にしたルール・追加したルールは、今のところ無い
+# - rubocop-rails・rubocop-performance は omakase に含まれるため、個別には追加しない
+# - rubocop-rspec は、RSpecの導入（#7）と同時に追加する
 #
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+# ルールを無効にする・変えるときは、そのルールの上に理由をコメントで書く
