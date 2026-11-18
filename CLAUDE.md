@@ -37,10 +37,11 @@ docker stop unstuck-rails
 # RuboCop（指摘0件で終わればOK。自動修正は rubocop -a）
 docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle \
   ruby:4.0.7 bash -c 'bundle install && bundle exec rubocop'
+# Brakeman（Security Warnings 0件でOK。無視する警告は config/brakeman.ignore の note に理由を書く）
+docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle ruby:4.0.7 bash -c 'bundle install && bundle exec brakeman --no-pager'
 ```
 
 ### 未確定（各Issueで追記する）
-- Brakeman: #6
 - RSpec: #7
 - フロントエンドの起動・ビルド・型チェック: #8
 - ESLint・Prettier: #9
@@ -142,7 +143,7 @@ push の前に、変更した側（backend／frontend）について次を実行
 |---|---|---|
 | backend | RSpec（テスト） | #7 で追記 |
 | backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（上記のdockerコマンドで実行） |
-| backend | Brakeman（セキュリティの検査） | #6 で追記 |
+| backend | Brakeman（セキュリティの検査） | `bundle exec brakeman --no-pager`（上記のdockerコマンドで実行） |
 | frontend | ESLint（コードの書き方の検査） | #9 で追記 |
 | frontend | Vitest（テスト） | #10 で追記 |
 
