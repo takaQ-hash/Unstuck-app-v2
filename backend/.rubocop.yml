@@ -1,11 +1,28 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
+plugins:
+  - rubocop-rspec
+
 # 設定の方針（#5）
 # - rubocop-rails-omakase（Rails公式の「おまかせ」設定）を、そのまま使う
 #   理由: Rails標準の書き方に合わせ、独自の設定を保つ手間を減らすため
 # - 無効にしたルール・追加したルールは、今のところ無い
 # - rubocop-rails・rubocop-performance は omakase に含まれるため、個別には追加しない
-# - rubocop-rspec は、RSpecの導入（#7）と同時に追加する
+# - rubocop-rspec を plugins で読み込む（#7。RSpecの導入と同時に追加）
 #
 # ルールを無効にする・変えるときは、そのルールの上に理由をコメントで書く
+
+# rubocop-rspec 3.10.2 で、有効・無効が未設定だった新しいルール（#7）
+# 理由: 未設定のままだと実行のたびにお知らせが出て、ルールも効かないため。
+#       NewCops: enable にはせず、今後増えるルールは1つずつ判断する
+RSpec/DiscardedMatcher:
+  Enabled: true
+RSpec/IncludeExamples:
+  Enabled: true
+RSpec/LeakyLocalVariable:
+  Enabled: true
+RSpec/MatchWithSimpleRegex:
+  Enabled: true
+RSpec/Output:
+  Enabled: true

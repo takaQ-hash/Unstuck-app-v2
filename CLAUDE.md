@@ -39,10 +39,11 @@ docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bund
   ruby:4.0.7 bash -c 'bundle install && bundle exec rubocop'
 # Brakeman（Security Warnings 0件でOK。無視する警告は config/brakeman.ignore の note に理由を書く）
 docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle ruby:4.0.7 bash -c 'bundle install && bundle exec brakeman --no-pager'
+# RSpec（一時的なPostgreSQLコンテナを立てて実行し、終了時に削除する。引数はrspecに渡す）
+scripts/backend-rspec.sh
 ```
 
 ### 未確定（各Issueで追記する）
-- RSpec: #7
 - フロントエンドの起動・ビルド・型チェック: #8
 - ESLint・Prettier: #9
 - Vitest: #10
@@ -141,7 +142,7 @@ push の前に、変更した側（backend／frontend）について次を実行
 
 | 対象 | チェック | コマンド |
 |---|---|---|
-| backend | RSpec（テスト） | #7 で追記 |
+| backend | RSpec（テスト） | `scripts/backend-rspec.sh`（リポジトリのルートで実行） |
 | backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（上記のdockerコマンドで実行） |
 | backend | Brakeman（セキュリティの検査） | `bundle exec brakeman --no-pager`（上記のdockerコマンドで実行） |
 | frontend | ESLint（コードの書き方の検査） | #9 で追記 |
