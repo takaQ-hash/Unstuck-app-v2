@@ -52,10 +52,12 @@ npm ci             # package-lock.json どおりに入れる（依存の追加�
 npm run dev        # 開発サーバー（http://localhost:5173）
 npm run build      # 本番用ビルド（型チェックを含む）
 npm run typecheck  # 型チェックだけ（0エラーでOK）
+npm run lint       # ESLint（指摘0件でOK）
+npm run format     # Prettierで整形する（ファイルを書き換える）
+npm run format:check  # 整形済みかの確認だけ（指摘0件でOK）
 ```
 
 ### 未確定（各Issueで追記する）
-- ESLint・Prettier: #9
 - Vitest: #10
 
 ## 開発環境の注意
@@ -155,7 +157,9 @@ push の前に、変更した側（backend／frontend）について次を実行
 | backend | RSpec（テスト） | `scripts/backend-rspec.sh`（リポジトリのルートで実行） |
 | backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（上記のdockerコマンドで実行） |
 | backend | Brakeman（セキュリティの検査） | `bundle exec brakeman --no-pager`（上記のdockerコマンドで実行） |
-| frontend | ESLint（コードの書き方の検査） | #9 で追記 |
+| frontend | 型チェック | `npm run typecheck`（`frontend/` で実行） |
+| frontend | ESLint（コードの書き方の検査） | `npm run lint`（`frontend/` で実行） |
+| frontend | Prettier（整形の確認） | `npm run format:check`（`frontend/` で実行） |
 | frontend | Vitest（テスト） | #10 で追記 |
 
 コマンドが未確定のチェックは、導入されるまでスキップしてよい。
