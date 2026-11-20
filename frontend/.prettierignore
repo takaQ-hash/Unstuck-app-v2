@@ -1,0 +1,2 @@
+# npmが自動で書き換えるため、整形しない
+package-lock.json
