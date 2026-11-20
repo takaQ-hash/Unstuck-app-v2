@@ -2,13 +2,13 @@
 
 ## プロジェクト概要
 Unstuck-app v2。React（frontend/）＋ Rails API（backend/）のモノレポ。
-※バージョン: Ruby 4.0 / Rails 8.1（API mode）  
+※バージョン: Ruby 4.0 / Rails 8.1（API mode） / Node 26 / React 19 / Vite 8  
 詳細は README.md と docs/er-diagram.md を参照する。
 
 ### ディレクトリ構成
 ```
 backend/    Rails API（#4で作成済み）
-frontend/   React（まだ無い。#8で作成予定）
+frontend/   React（#8で作成済み）
 docs/       設計資料（ER図・画面遷移図など）
 .github/    Issue・PRテンプレート
 .claude/    Claude Codeのチーム共有設定（settings.json）
@@ -43,8 +43,18 @@ docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bund
 scripts/backend-rspec.sh
 ```
 
+### フロントエンド（React）
+ホストのNode（nvm）で、`frontend/` に移動して実行する。Nodeは `frontend/.nvmrc` の26に合わせる
+（`engine-strict` のため、ほかの版では `npm ci` が失敗する）。
+```bash
+nvm use            # .nvmrc の版（26）に切り替える
+npm ci             # package-lock.json どおりに入れる（依存の追加・更新は、確認後に npm install）
+npm run dev        # 開発サーバー（http://localhost:5173）
+npm run build      # 本番用ビルド（型チェックを含む）
+npm run typecheck  # 型チェックだけ（0エラーでOK）
+```
+
 ### 未確定（各Issueで追記する）
-- フロントエンドの起動・ビルド・型チェック: #8
 - ESLint・Prettier: #9
 - Vitest: #10
 
