@@ -64,6 +64,7 @@ docs/       設計資料（ER図・画面遷移図など）
 - `.env`・`master.key` などのシークレットの読み取り・コミット
 
 settings.json で止められない書き方（例: `git -C . push`）もあるため、GitHubのブランチ保護でも防ぐ（ユーザーが設定する）。
+`.claude/settings.json` がないブランチに切り替えると、Claude Code の権限ルール（deny を含む）が外れる。戻ったら Claude Code を再起動する。
 
 ## ブランチ名
 `feat/`、`fix/`、`chore/`、`docs/` のいずれかで始める（developから作成）。
