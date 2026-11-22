@@ -2,4 +2,24 @@
 # 使い方は CLAUDE.md の「開発用のDB・Redis（compose）」を参照する
 name: unstuck
 
-services: {}
+services:
+  postgres:
+    # メジャーバージョンを固定する（scripts/backend-rspec.sh と同じ版）
+    image: postgres:18
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?.env.example を .env にコピーして、値を入れてください}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env.example を .env にコピーして、値を入れてください}
+    ports:
+      # ホストからだけ接続できるようにする（LANには公開しない）
+      - "127.0.0.1:5432:5432"
+    volumes:
+      # PostgreSQL 18 のデータは /var/lib/postgresql/18/docker に置かれるため、親に付ける
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
