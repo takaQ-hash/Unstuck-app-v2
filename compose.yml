@@ -1,0 +1,5 @@
+# 開発用のcompose。リポジトリのルートで docker compose up -d を実行する
+# 使い方は CLAUDE.md の「開発用のDB・Redis（compose）」を参照する
+name: unstuck
+
+services: {}
