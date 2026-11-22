@@ -17,58 +17,14 @@ docs/       設計資料（ER図・画面遷移図など）
 ## コマンド
 確定したものだけを書く。未確定のものは、各Issueで追記する。
 
-### バックエンド（Rails）
-ホストにRubyは入れていないため、Dockerの `ruby:4.0.7` イメージで実行する。
-compose.yml は #12・#13 で整備する。それまでは次の形で一時的に起動する。
-```bash
-# Railsサーバーをバックグラウンドで起動する
-docker run -d --rm --name unstuck-rails -v "$PWD":/app -w /app/backend \
-  -v unstuck_bundle:/usr/local/bundle -p 3000:3000 \
-  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) ruby:4.0.7 \
-  bash -c 'bundle install && bundle exec rails s -b 0.0.0.0'
+- backend のコマンドと開発環境の注意は `backend/CLAUDE.md`、frontend のコマンドは `frontend/CLAUDE.md` を見る
+  （各ディレクトリのファイルを扱うと、Claude Code が自動で読み込む）
 
-# ヘルスチェック（200が返ればOK）
-curl -i http://localhost:3000/up
-
-# 停止する前に、コンテナ内で作られたファイルの所有者を戻す
-docker exec unstuck-rails bash -c 'chown -R $HOST_UID:$HOST_GID /app/backend'
-docker stop unstuck-rails
-
-# RuboCop（指摘0件で終わればOK。自動修正は rubocop -a）
-docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle \
-  ruby:4.0.7 bash -c 'bundle install && bundle exec rubocop'
-# Brakeman（Security Warnings 0件でOK。無視する警告は config/brakeman.ignore の note に理由を書く）
-docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle ruby:4.0.7 bash -c 'bundle install && bundle exec brakeman --no-pager'
-# RSpec（一時的なPostgreSQLコンテナを立てて実行し、終了時に削除する。引数はrspecに渡す）
-scripts/backend-rspec.sh
-```
-
-### フロントエンド（React）
-ホストのNode（nvm）で、`frontend/` に移動して実行する。Nodeは `frontend/.nvmrc` の26に合わせる
-（`engine-strict` のため、ほかの版では `npm ci` が失敗する）。
-```bash
-nvm use            # .nvmrc の版（26）に切り替える
-npm ci             # package-lock.json どおりに入れる（依存の追加・更新は、確認後に npm install）
-npm run dev        # 開発サーバー（http://localhost:5173）
-npm run build      # 本番用ビルド（型チェックを含む）
-npm run typecheck  # 型チェックだけ（0エラーでOK）
-npm run lint       # ESLint（指摘0件でOK）
-npm run format     # Prettierで整形する（ファイルを書き換える）
-npm run format:check  # 整形済みかの確認だけ（指摘0件でOK）
-npm test           # Vitest（1回実行して終わる。全件passでOK）
-```
-
-## 開発環境の注意
-
-### Dockerコマンド
-- `-it` を付けない（Claude Codeには対話できる端末が無く、コマンドが止まってしまうため）
-- 複数のコマンドは `bash -c '...'` にまとめて実行する
-- コンテナ内で作られたファイルは root の所有になる。コンテナ内で `chown -R $HOST_UID:$HOST_GID <対象>` を実行し、所有者を戻す
-  （`docker run` に `-e HOST_UID=$(id -u) -e HOST_GID=$(id -g)` を渡しておく）
-
-### `/up` とPostgreSQL
-- 開発環境の `/up`（Railsのヘルスチェック用のURL）は、PostgreSQLが起動していないと500を返す
-- `/up` を確認するときは、先にPostgreSQLを起動する（開発用の compose.yml は #12 で用意する）
+## 開発環境の注意（Docker）
+詳細は `backend/CLAUDE.md` を見る。要点:
+- `-it` を付けない（対話できる端末が無く、コマンドが止まるため）
+- 複数のコマンドは `bash -c '...'` にまとめる
+- コンテナ内で作られたファイルは root の所有になるため、`chown` で所有者を戻す
 
 ## 基本方針
 - 1 Issue = 1 PR とする
@@ -108,6 +64,7 @@ npm test           # Vitest（1回実行して終わる。全件passでOK）
 - `.env`・`master.key` などのシークレットの読み取り・コミット
 
 settings.json で止められない書き方（例: `git -C . push`）もあるため、GitHubのブランチ保護でも防ぐ（ユーザーが設定する）。
+`.claude/settings.json` がないブランチに切り替えると、Claude Code の権限ルール（deny を含む）が外れる。戻ったら Claude Code を再起動する。
 
 ## ブランチ名
 `feat/`、`fix/`、`chore/`、`docs/` のいずれかで始める（developから作成）。
@@ -153,8 +110,8 @@ push の前に、変更した側（backend／frontend）について次を実行
 | 対象 | チェック | コマンド |
 |---|---|---|
 | backend | RSpec（テスト） | `scripts/backend-rspec.sh`（リポジトリのルートで実行） |
-| backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（上記のdockerコマンドで実行） |
-| backend | Brakeman（セキュリティの検査） | `bundle exec brakeman --no-pager`（上記のdockerコマンドで実行） |
+| backend | RuboCop（コードの書き方の検査） | `bundle exec rubocop`（`backend/CLAUDE.md` のRuboCopのコマンドで実行） |
+| backend | Brakeman（セキュリティの検査） | `bundle exec brakeman --no-pager`（`backend/CLAUDE.md` のBrakemanのコマンドで実行） |
 | frontend | 型チェック | `npm run typecheck`（`frontend/` で実行） |
 | frontend | ESLint（コードの書き方の検査） | `npm run lint`（`frontend/` で実行） |
 | frontend | Prettier（整形の確認） | `npm run format:check`（`frontend/` で実行） |
