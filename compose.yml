@@ -21,5 +21,18 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    # メジャーバージョンを固定する
+    image: redis:8
+    ports:
+      # ホストからだけ接続できるようにする（LANには公開しない）
+      - "127.0.0.1:6379:6379"
+    # データは残さない（ジョブの予約の扱いは、Sidekiqの導入時に決める）
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   postgres_data:
