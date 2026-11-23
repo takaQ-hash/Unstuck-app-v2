@@ -20,20 +20,21 @@ docs/       設計資料（ER図・画面遷移図など）
 - backend のコマンドと開発環境の注意は `backend/CLAUDE.md`、frontend のコマンドは `frontend/CLAUDE.md` を見る
   （各ディレクトリのファイルを扱うと、Claude Code が自動で読み込む）
 
-### 開発用のDB・Redis（compose）
-リポジトリのルートで実行する。
+### 開発環境（compose）
+リポジトリのルートで実行する。フロントは http://localhost:5173（`/api` は Rails に転送）、Rails は http://localhost:3000。
 ```bash
-cp .env.example .env   # 初回だけ。.env の POSTGRES_PASSWORD に値を入れる（.env はコミットしない）
-docker compose up -d   # PostgreSQL・Redisをバックグラウンドで起動する
-docker compose ps      # 状態を見る（STATUS が healthy ならOK）
-docker compose down    # 止める（データはボリュームに残る。消すときは down -v）
+cp .env.example .env          # 初回だけ。.env の POSTGRES_PASSWORD に値を入れる（.env はコミットしない）
+docker compose up -d --build  # PostgreSQL・Redis・Rails・フロントを起動する（--build は初回と Dockerfile.dev を変えたとき）
+docker compose ps             # 状態を見る（postgres・redis は healthy、backend・frontend は Up ならOK）
+docker compose logs -f backend  # ログを見る（初回は gem・npm パッケージの取得に時間がかかる）
+docker compose down           # 止める（データはボリュームに残る。消すときは down -v）
 ```
 
 ## 開発環境の注意（Docker）
 詳細は `backend/CLAUDE.md` を見る。要点:
 - `-it` を付けない（対話できる端末が無く、コマンドが止まるため）
 - 複数のコマンドは `bash -c '...'` にまとめる
-- コンテナ内で作られたファイルは root の所有になるため、`chown` で所有者を戻す
+- `docker run` でコンテナ内に作られたファイルは root の所有になるため、`chown` で所有者を戻す（compose の backend・frontend は UID 1000 で動くため不要）
 
 ## 基本方針
 - 1 Issue = 1 PR とする

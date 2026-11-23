@@ -4,21 +4,17 @@
 
 ## コマンド
 ホストにRubyは入れていないため、Dockerの `ruby:4.0.7` イメージで実行する。
-PostgreSQL・Redis は compose.yml で起動する（ルートの CLAUDE.md）。Rails は #13 で compose に加えるまで、次の形で一時的に起動する。
-コマンドは、リポジトリのルートで実行する（`-v "$PWD":/app` がルートを前提にしているため）。
+Railsサーバーは、compose の backend サービス（`backend/Dockerfile.dev`、UID 1000 の一般ユーザー）で動かす。
+PostgreSQL・Redis も compose.yml で起動する（ルートの CLAUDE.md）。
+コマンドは、リポジトリのルートで実行する（下の `docker run` は `-v "$PWD":/app` がルートを前提にしているため）。
 ```bash
-# Railsサーバーをバックグラウンドで起動する
-docker run -d --rm --name unstuck-rails -v "$PWD":/app -w /app/backend \
-  -v unstuck_bundle:/usr/local/bundle -p 3000:3000 \
-  -e HOST_UID=$(id -u) -e HOST_GID=$(id -g) ruby:4.0.7 \
-  bash -c 'bundle install && bundle exec rails s -b 0.0.0.0'
-
+# Railsサーバーを起動する（PostgreSQL・Redis が healthy になってから起動し、db:prepare も行う）
+docker compose up -d backend
 # ヘルスチェック（200が返ればOK）
 curl -i http://localhost:3000/up
-
-# 停止する前に、コンテナ内で作られたファイルの所有者を戻す
-docker exec unstuck-rails bash -c 'chown -R $HOST_UID:$HOST_GID /app/backend'
-docker stop unstuck-rails
+# ログを見る・止める
+docker compose logs -f backend
+docker compose stop backend
 
 # RuboCop（指摘0件で終わればOK。自動修正は rubocop -a）
 docker run --rm -v "$PWD":/app -w /app/backend -v unstuck_bundle:/usr/local/bundle \
@@ -34,9 +30,9 @@ scripts/backend-rspec.sh
 ### Dockerコマンド
 - `-it` を付けない（Claude Codeには対話できる端末が無く、コマンドが止まってしまうため）
 - 複数のコマンドは `bash -c '...'` にまとめて実行する
-- コンテナ内で作られたファイルは root の所有になる。コンテナ内で `chown -R $HOST_UID:$HOST_GID <対象>` を実行し、所有者を戻す
+- `docker run`（RuboCop・Brakeman・RSpec）でコンテナ内に作られたファイルは root の所有になる。コンテナ内で `chown -R $HOST_UID:$HOST_GID <対象>` を実行し、所有者を戻す
   （`docker run` に `-e HOST_UID=$(id -u) -e HOST_GID=$(id -g)` を渡しておく）
 
 ### `/up` とPostgreSQL
 - 開発環境の `/up`（Railsのヘルスチェック用のURL）は、PostgreSQLが起動していないと500を返す
-- `/up` を確認するときは、先にPostgreSQLを起動する（PostgreSQL は `docker compose up -d` で起動できる。Rails からの接続設定は #13 で行う）
+- `/up` を確認するときは、先にPostgreSQLを起動する（compose の backend は、PostgreSQL が healthy になってから起動する）
