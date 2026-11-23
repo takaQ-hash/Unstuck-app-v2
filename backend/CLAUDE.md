@@ -4,7 +4,7 @@
 
 ## コマンド
 ホストにRubyは入れていないため、Dockerの `ruby:4.0.7` イメージで実行する。
-compose.yml は #12・#13 で整備する。それまでは次の形で一時的に起動する。
+PostgreSQL・Redis は compose.yml で起動する（ルートの CLAUDE.md）。Rails は #13 で compose に加えるまで、次の形で一時的に起動する。
 コマンドは、リポジトリのルートで実行する（`-v "$PWD":/app` がルートを前提にしているため）。
 ```bash
 # Railsサーバーをバックグラウンドで起動する
@@ -39,4 +39,4 @@ scripts/backend-rspec.sh
 
 ### `/up` とPostgreSQL
 - 開発環境の `/up`（Railsのヘルスチェック用のURL）は、PostgreSQLが起動していないと500を返す
-- `/up` を確認するときは、先にPostgreSQLを起動する（開発用の compose.yml は #12 で用意する）
+- `/up` を確認するときは、先にPostgreSQLを起動する（PostgreSQL は `docker compose up -d` で起動できる。Rails からの接続設定は #13 で行う）
