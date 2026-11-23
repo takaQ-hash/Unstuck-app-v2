@@ -20,6 +20,15 @@ docs/       設計資料（ER図・画面遷移図など）
 - backend のコマンドと開発環境の注意は `backend/CLAUDE.md`、frontend のコマンドは `frontend/CLAUDE.md` を見る
   （各ディレクトリのファイルを扱うと、Claude Code が自動で読み込む）
 
+### 開発用のDB・Redis（compose）
+リポジトリのルートで実行する。
+```bash
+cp .env.example .env   # 初回だけ。.env の POSTGRES_PASSWORD に値を入れる（.env はコミットしない）
+docker compose up -d   # PostgreSQL・Redisをバックグラウンドで起動する
+docker compose ps      # 状態を見る（STATUS が healthy ならOK）
+docker compose down    # 止める（データはボリュームに残る。消すときは down -v）
+```
+
 ## 開発環境の注意（Docker）
 詳細は `backend/CLAUDE.md` を見る。要点:
 - `-it` を付けない（対話できる端末が無く、コマンドが止まるため）
