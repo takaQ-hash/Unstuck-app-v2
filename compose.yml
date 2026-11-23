@@ -56,6 +56,36 @@ services:
       redis:
         condition: service_healthy
 
+  # frontend_node_modules ボリュームは root の持ち物で作られるため、node ユーザーの持ち物に直して終わる
+  frontend-init:
+    image: node:26
+    user: root
+    volumes:
+      - frontend_node_modules:/app/frontend/node_modules
+    command: chown node:node /app/frontend/node_modules
+
+  frontend:
+    image: node:26
+    user: node
+    working_dir: /app/frontend
+    volumes:
+      # frontend だけをマウントする（ルートの .env をコンテナに見せない）
+      - ./frontend:/app/frontend
+      # node_modules は専用のボリュームに置き、ホストの node_modules と混ぜない
+      - frontend_node_modules:/app/frontend/node_modules
+    ports:
+      - "127.0.0.1:5173:5173"
+    environment:
+      # Vite のプロキシ（/api）の転送先を、compose の中の Rails にする
+      VITE_API_PROXY_TARGET: http://backend:3000
+    command: bash -c 'npm ci && npm run dev -- --host 0.0.0.0'
+    depends_on:
+      frontend-init:
+        condition: service_completed_successfully
+      backend:
+        condition: service_started
+
 volumes:
   postgres_data:
   backend_bundle:
+  frontend_node_modules:
