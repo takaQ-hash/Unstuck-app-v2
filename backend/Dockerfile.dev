@@ -1,0 +1,19 @@
+# 開発用のDockerfile（compose.yml の backend サービスで使う）
+# 本番用は Dockerfile。ソースはイメージに入れず、compose で ./backend をマウントする
+
+# 今の docker run の手順と同じイメージ（pg などのネイティブ拡張をビルドできる）
+FROM ruby:4.0.7
+
+# ホストのユーザーと同じ UID・GID の一般ユーザーで動かし、作られたファイルを chown しなくて済むようにする
+ARG UID=1000
+ARG GID=1000
+RUN groupadd --gid "${GID}" app && \
+    useradd --create-home --uid "${UID}" --gid "${GID}" app
+
+# gem の置き場所（名前付きボリュームを付ける）を app の持ち物にしておく。
+# 新しいボリュームは、イメージのこの場所の持ち主を引き継ぐため、app で gem を入れられる
+ENV BUNDLE_PATH=/usr/local/bundle
+RUN mkdir -p /usr/local/bundle && chown -R app:app /usr/local/bundle
+
+WORKDIR /app/backend
+USER app

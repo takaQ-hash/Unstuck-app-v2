@@ -6,6 +6,7 @@
 
 ホストのNode（nvm）で、`frontend/` に移動して実行する。Nodeは `frontend/.nvmrc` の26に合わせる
 （`engine-strict` のため、ほかの版では `npm ci` が失敗する）。
+compose でも起動できる（ルートの CLAUDE.md の `docker compose up -d`）。どちらの場合も、`/api` は Rails に転送される（ホストの Node では localhost:3000）。
 
 ```bash
 nvm use            # .nvmrc の版（26）に切り替える
