@@ -34,5 +34,28 @@ services:
       timeout: 5s
       retries: 10
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      # backend だけをマウントする（ルートの .env をコンテナに見せない）
+      - ./backend:/app/backend
+      # gem の置き場所。docker run 用の unstuck_bundle（root の持ち物）とは分ける
+      - backend_bundle:/usr/local/bundle
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      # パスワードは .env から compose が埋める。DB名は database.yml の development と同じ
+      DATABASE_URL: postgres://${POSTGRES_USER:?.env.example を .env にコピーして、値を入れてください}:${POSTGRES_PASSWORD:?.env.example を .env にコピーして、値を入れてください}@postgres:5432/backend_development
+      REDIS_URL: redis://redis:6379/0
+    command: bash -c 'bundle install && rm -f tmp/pids/server.pid && bin/rails db:prepare && bin/rails s -b 0.0.0.0'
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  backend_bundle:
